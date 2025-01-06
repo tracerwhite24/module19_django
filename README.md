@@ -1,12 +1,6 @@
-Команды в порядке выполнения:
+Три добавленных регистрацией пользователя в таблице auth_user;
+
+http://127.0.0.1:8000/platform - главная
+http://127.0.0.1:8000/sign_up - регистрация
 
 
-
-  python manage.py makemigrations
-
-  python manage.py migrate
-
-  python manage.py runserver
-
-  
-  http://127.0.0.1:8000/create-data/ - переход на страницу для заполнения БД

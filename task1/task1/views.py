@@ -1,18 +1,58 @@
 from django.shortcuts import render
-from .models import Buyer, Game
+from .forms import UserRegister
+from django.contrib.auth.models import User
+from .models import Game
 
 
-def create_data(request):
-    buyer1 = Buyer.objects.create(name="Sasha", balance=500.00, age=17)  # Младше 18
-    buyer2 = Buyer.objects.create(name="Maria", balance=600.00, age=25)    # Взрослый
-    buyer3 = Buyer.objects.create(name="Michael", balance=800.00, age=30) # Взрослый
+def store_platform(request):
+    return render(request, 'fourth_task/platform.html')
 
-    game1 = Game.objects.create(title="Mario", cost=50.00, size=1.5, description="Весёлая игра", age_limited=False)  # Без ограничения по возрасту
-    game2 = Game.objects.create(title="Witcher III", cost=50.00, size=2.0, description="Увлекательная история", age_limited=True)  # С ограничением по возрасту
-    game3 = Game.objects.create(title="Phoenix Wright", cost=40.00, size=3.0, description="Незабываемый опыт", age_limited=True)  # С ограничением по возрасту
 
-    game1.buyers.set([buyer2, buyer3])  # Game A без ограничения по возрасту
-    game2.buyers.set([buyer2])            # Game B с ограничением по возрасту
-    game3.buyers.set([buyer2])            # Game C с ограничением по возрасту
+def store_goods(request):
+    # Извлекаем все записи из базы данных
+    games = Game.objects.all()
 
-    return render(request, 'data_created.html')
+    goods = {
+        'items': games
+    }
+
+    return render(request, 'fourth_task/goods.html', context=goods)
+
+
+def store_cart(request):
+    return render(request, 'fourth_task/cart.html')
+
+
+def sign_up(request):
+    info = {'form_type': 'sign_up'}
+
+    if request.method == 'POST':
+        form = UserRegister(request.POST)
+
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            repeat_password = form.cleaned_data['repeat_password']
+            age = form.cleaned_data['age']
+
+            if password != repeat_password:
+                info['error'] = 'Пароли не совпадают'
+            elif age < 18:
+                info['error'] = 'Вы должны быть старше 18'
+            else:
+                # Проверяем, существует ли пользователь с таким именем
+                if User.objects.filter(username=username).exists():
+                    info['error'] = 'Пользователь уже существует'
+                else:
+                    # Создаём нового пользователя
+                    user = User.objects.create_user(username=username, password=password)
+
+                    info['success'] = f'Приветствуем, {username}!'
+                    form = UserRegister()  # Сбрасываем форму после успешной регистрации
+        else:
+            info['error'] = 'Пожалуйста, исправьте ошибки в форме.'
+    else:
+        form = UserRegister()
+
+    info['form'] = form
+    return render(request, 'fifth_task/registration_page.html', info)
