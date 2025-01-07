@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Game, Buyer
+from .models import Game, Buyer, News
 
 
 class GameAdmin(admin.ModelAdmin):
@@ -32,3 +32,10 @@ class BuyerAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     list_per_page = 10
     readonly_fields = ('balance',)
+
+
+@admin.register(News)
+class NewsAdmin(admin.ModelAdmin):
+    list_display = ('title', 'date')
+    search_fields = ('title', 'content')
+    list_filter = ('date',)

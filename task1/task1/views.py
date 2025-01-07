@@ -2,6 +2,12 @@ from django.shortcuts import render
 from .forms import UserRegister
 from django.contrib.auth.models import User
 from .models import Game
+from django.core.paginator import Paginator
+from .models import News
+
+
+def menu(request):
+    return render(request, 'fourth_task/menu.html')
 
 
 def store_platform(request):
@@ -56,3 +62,13 @@ def sign_up(request):
 
     info['form'] = form
     return render(request, 'fifth_task/registration_page.html', info)
+
+
+def news(request):
+    news_list = News.objects.all().order_by('-date')
+    paginator = Paginator(news_list, 5)
+
+    page_number = request.GET.get('page')
+    news_page = paginator.get_page(page_number)
+
+    return render(request, 'fourth_task/news.html', {'news': news_page})

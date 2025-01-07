@@ -1,0 +1,33 @@
+<!-- fourth_task/goods.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Goods</title>
+    <style>
+        .buy-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .buy-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Товары</h1>
+    <ul>
+        {% for item in items %}
+            <li>
+                {{ item.title }} | {{ item.description }}. Стоимость: {{ item.cost }} руб.
+                <button class="buy-button" onclick="addToCart('{{ item.title }}')">КУПИТЬ</button>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
